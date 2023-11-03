@@ -3,7 +3,7 @@ from PIL import Image
 import os
 
 # Provide the encryption key (use the key from the encryption step)
-key_hex = "YOUR_ENCRYPTION_KEY_HEX"
+key_hex =input("")
 key = Fernet(key_hex.encode())
 
 # Define the folder containing the encrypted pictures you want to decrypt
