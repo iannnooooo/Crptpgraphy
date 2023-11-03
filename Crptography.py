@@ -2,15 +2,15 @@ from cryptography.fernet import Fernet
 from PIL import Image
 import os
 
-# Generate a random encryption key
-key = Fernet.generate_key()
-fernet = Fernet(key)
+# Provide the encryption key (use the key from the encryption step)
+key_hex = "YOUR_ENCRYPTION_KEY_HEX"
+key = Fernet(key_hex.encode())
 
-# Define the folder containing the pictures you want to encrypt
-input_folder = "input_pictures"
+# Define the folder containing the encrypted pictures you want to decrypt
+input_folder = "encrypted_pictures"
 
-# Define the folder where you want to save the encrypted pictures
-output_folder = "encrypted_pictures"
+# Define the folder where you want to save the decrypted pictures
+output_folder = "decrypted_pictures"
 
 # Create the output folder if it doesn't exist
 if not os.path.exists(output_folder):
@@ -23,18 +23,15 @@ for file in files:
     input_path = os.path.join(input_folder, file)
     output_path = os.path.join(output_folder, file)
 
-    # Open the image using Pillow
-    image = Image.open(input_path)
+    # Read the encrypted data from the input file
+    with open(input_path, "rb") as input_file:
+        encrypted_data = input_file.read()
 
-    # Convert the image to bytes
-    image_bytes = image.tobytes()
+    # Decrypt the encrypted data
+    decrypted_data = key.decrypt(encrypted_data)
 
-    # Encrypt the image bytes
-    encrypted_data = fernet.encrypt(image_bytes)
+    # Create an image from the decrypted bytes and save it
+    image = Image.frombytes("RGB", (500, 500), decrypted_data)
+    image.save(output_path)
 
-    # Save the encrypted data to the output folder
-    with open(output_path, "wb") as output_file:
-        output_file.write(encrypted_data)
-
-print("Encryption completed.")
-print(f"Encryption key: {key.hex()}")
+print("Decryption completed.")
